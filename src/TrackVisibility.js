@@ -56,7 +56,16 @@ export default class TrackVisibility extends Component {
      * Exposed for testing but allows node other than internal wrapping <div /> to be tracked
      * for visibility
      */
-    nodeRef: PropTypes.object
+    nodeRef: PropTypes.object,
+
+    /**
+     * Reference container for listeners
+     */
+    container: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.func,
+      PropTypes.object,
+    ]),
   };
 
   static defaultProps = {
@@ -67,7 +76,8 @@ export default class TrackVisibility extends Component {
     className: null,
     offset: 0,
     partialVisibility: false,
-    nodeRef: null
+    nodeRef: null,
+    container: null,
   };
   
   constructor(props) {
@@ -111,14 +121,16 @@ export default class TrackVisibility extends Component {
     }
   }
 
-  attachListener() {
-    window.addEventListener("scroll", this.throttleCb);
-    window.addEventListener("resize", this.throttleCb);
+  attachListener = () => {
+    const { container = window } = this.props;
+    container.addEventListener("scroll", this.throttleCb);
+    container.addEventListener("resize", this.throttleCb);
   }
 
-  removeListener() {
-    window.removeEventListener("scroll", this.throttleCb);
-    window.removeEventListener("resize", this.throttleCb);
+  removeListener = () => {
+    const { container = window } = this.props;
+    container.removeEventListener("scroll", this.throttleCb);
+    container.removeEventListener("resize", this.throttleCb);
   }
 
   getOwnProps(props = this.props) {

@@ -9,6 +9,7 @@
 * [Usage](#usage)
   + [Simple](#simple)
   + [Using a render props](#using-a-render-props)
+  + [Using custom container](#using-custom-container)
   + [Track the visibility only once](#track-the-visibility-only-once)
   + [Defining offset](#defining-offset)
   + [Partial visibility](#partial-visibility)
@@ -38,7 +39,7 @@ A UMD build is also available :
 
 ### Simple
 
-```javascript
+```js
 import React from 'react';
 import TrackVisibility from 'react-on-screen';
 
@@ -69,6 +70,18 @@ const YourApp = () => {
     return (
         <TrackVisibility>
             {({ isVisible }) => isVisible && <ComponentToTrack />}
+        </TrackVisibility>
+    );
+}
+```
+
+### Using custom container
+
+```js
+const YourApp = () => {
+    return (
+        <TrackVisibility container={refContainer}>
+            <ComponentToTrack />
         </TrackVisibility>
     );
 }
@@ -125,6 +138,7 @@ const YourApp = () => {
 |children        |React Components|  -  |Can be on or many react components|
 |style           |object          |  -  |Style attributes|
 |className       |string          |  -  |Css classes|
+|container       |React Ref       |window|Custom ref container|
 |offset          |number          |  0  |Allows you to specify how far left or above of the viewport you want to set isVisible to `true`|
 |partialVisibility|bool           |false|Set isVisible to true on element as soon as any part is in the viewport|
 

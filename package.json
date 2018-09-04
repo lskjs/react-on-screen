@@ -1,6 +1,6 @@
 {
-  "name": "react-on-screen",
-  "version": "2.0.4",
+  "name": "@lskjs/react-on-screen",
+  "version": "2.0.5",
   "description": "A wrapper component to track if your react component is visible on screen",
   "keywords": [
     "react",
@@ -18,20 +18,19 @@
     "pretest": "npm run lint",
     "test": "jest",
     "test:coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
-    "prebuild": "npm run test",
     "build": "NODE_ENV=production ./scripts/build.sh",
     "build-dev": "NODE_ENV=developement ./scripts/build.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fkhadra/react-on-screen.git"
+    "url": "git+https://github.com/lskjs/react-on-screen.git"
   },
   "author": "Fadi Khadra  <fdkhadra@gmail.com> (https://fkhadra.github.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fkhadra/react-on-screen/issues"
+    "url": "https://github.com/lskjs/react-on-screen/issues"
   },
-  "homepage": "https://github.com/fkhadra/react-on-screen#readme",
+  "homepage": "https://github.com/lskjs/react-on-screen#readme",
   "jest": {
     "verbose": true,
     "setupFiles": [
