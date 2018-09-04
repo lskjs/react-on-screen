@@ -31,6 +31,10 @@ interface TrackVisibilityProps {
   * Update the visibility state as soon as a part of the tracked component is visible
   */
   partialVisibility?: boolean;
+  /**
+  * Reference container for listeners
+  */
+  container?: any;
 }
 
 export default class TrackVisibility extends React.Component<TrackVisibilityProps> {}

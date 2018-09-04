@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
+import omit from 'lodash.omit';
 import shallowequal from "shallowequal";
 
 export default class TrackVisibility extends Component {
@@ -61,11 +62,8 @@ export default class TrackVisibility extends Component {
     /**
      * Reference container for listeners
      */
-    container: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.func,
-      PropTypes.object,
-    ]),
+    container: PropTypes.any,
+    useCustomContainer: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -77,11 +75,14 @@ export default class TrackVisibility extends Component {
     offset: 0,
     partialVisibility: false,
     nodeRef: null,
-    container: null,
+    container: window,
+    useCustomContainer: false,
   };
   
   constructor(props) {
     super(props);
+    console.log('constructor', props);
+    
     this.state = {
         isVisible: false
     };
@@ -91,15 +92,19 @@ export default class TrackVisibility extends Component {
     );
 
     props.nodeRef && this.setNodeRef(props.nodeRef);
+    this.attachListener = this.attachListener.bind(this);
+    this.removeListener = this.removeListener.bind(this);
   }
 
   componentDidMount() {
-    this.attachListener();
+    if (!this.props.useCustomContainer) {
+      this.attachListener(window);
+    }
     setTimeout(this.isComponentVisible, 0);
   }
 
   componentWillUnmount() {
-    this.removeListener();
+    this.removeListener(this.props.useCustomContainer ? this.props.container : window);
   }
 
   /**
@@ -109,26 +114,33 @@ export default class TrackVisibility extends Component {
    */
   shouldComponentUpdate(nextProps, nextState) {
     return !shallowequal(this.state, nextState)
-      || !shallowequal(this.getOwnProps(this.props), this.getOwnProps(nextProps));
+      || !shallowequal(this.getOwnProps(omit(this.props, ['container'])), this.getOwnProps(omit(nextProps, ['container'])));
   }
   
   /**
    * Trigger visibility calculation only when non-own props change
    */
   componentWillReceiveProps(nextProps) {
-    if (!shallowequal(this.getChildProps(this.props), this.getChildProps(nextProps))) {
-      setTimeout(this.isComponentVisible, 0)
+    console.log(nextProps);
+    
+    if (this.props.useCustomContainer && nextProps.container && this.props.container !== nextProps.container) {
+      this.attachListener(nextProps.container);
+    }
+    if (!shallowequal(this.getChildProps(omit(this.props, ['container'])), this.getChildProps(omit(nextProps, ['container'])))) {
+      if ((this.props.useCustomContainer && nextProps.container) || !this.props.useCustomContainer) {
+        setTimeout(() => this.isComponentVisible(this.props.useCustomContainer ? nextProps.container : window), 0);
+      }
     }
   }
 
-  attachListener = () => {
-    const { container = window } = this.props;
+  attachListener(container) {
+    console.log('attachListener', container, this.props);
     container.addEventListener("scroll", this.throttleCb);
     container.addEventListener("resize", this.throttleCb);
   }
 
-  removeListener = () => {
-    const { container = window } = this.props;
+  removeListener(container) {
+    console.log('removeListener', container, this.props);
     container.removeEventListener("scroll", this.throttleCb);
     container.removeEventListener("resize", this.throttleCb);
   }
@@ -174,9 +186,9 @@ export default class TrackVisibility extends Component {
         && right <= widthCheck;
   }
   
-  isComponentVisible = () => {
+  isComponentVisible = (fallbackContainer) => {
     const html = document.documentElement;
-    const { once } = this.props;
+    const { once, container, useCustomContainer } = this.props;
     const boundingClientRect = this.nodeRef.getBoundingClientRect();
     const windowWidth = window.innerWidth || html.clientWidth;
     const windowHeight = window.innerHeight || html.clientHeight;
@@ -184,7 +196,7 @@ export default class TrackVisibility extends Component {
     const isVisible = this.isVisible(boundingClientRect, windowWidth, windowHeight);
     
     if (isVisible && once) {
-      this.removeListener();
+      this.removeListener(useCustomContainer ? (container || fallbackContainer) : window);
     }
     
     this.setState({ isVisible });

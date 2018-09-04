@@ -1,6 +1,6 @@
 {
   "name": "@lskjs/react-on-screen",
-  "version": "2.0.5",
+  "version": "2.0.20",
   "description": "A wrapper component to track if your react component is visible on screen",
   "keywords": [
     "react",
@@ -11,7 +11,7 @@
     "react-on-screen",
     "screen"
   ],
-  "main": "lib/index.js",
+  "main": "dist/ReactOnScreen.min.js",
   "typings": "./index.d.ts",
   "scripts": {
     "lint": "eslint src/",
@@ -69,6 +69,7 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
+    "lodash.omit": "^4.5.0",
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.6.0",
     "shallowequal": "^1.0.2"
