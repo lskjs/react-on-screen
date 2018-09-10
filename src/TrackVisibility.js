@@ -75,13 +75,12 @@ export default class TrackVisibility extends Component {
     offset: 0,
     partialVisibility: false,
     nodeRef: null,
-    container: window,
+    container: null,
     useCustomContainer: false,
   };
   
   constructor(props) {
     super(props);
-    console.log('constructor', props);
     
     this.state = {
         isVisible: false
@@ -97,14 +96,16 @@ export default class TrackVisibility extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.useCustomContainer) {
+    if (!this.props.useCustomContainer && typeof window !== 'undefined') {
       this.attachListener(window);
     }
     setTimeout(this.isComponentVisible, 0);
   }
 
   componentWillUnmount() {
-    this.removeListener(this.props.useCustomContainer ? this.props.container : window);
+    if (typeof window !== 'undefined') {
+      this.removeListener(this.props.useCustomContainer ? this.props.container : window);
+    }
   }
 
   /**
@@ -187,6 +188,7 @@ export default class TrackVisibility extends Component {
   }
   
   isComponentVisible = (fallbackContainer) => {
+    if (typeof window === 'undefined') return;
     const html = document.documentElement;
     const { once, container, useCustomContainer } = this.props;
     const boundingClientRect = this.nodeRef.getBoundingClientRect();

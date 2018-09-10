@@ -1,6 +1,6 @@
 {
   "name": "@lskjs/react-on-screen",
-  "version": "2.0.20",
+  "version": "2.0.21",
   "description": "A wrapper component to track if your react component is visible on screen",
   "keywords": [
     "react",
